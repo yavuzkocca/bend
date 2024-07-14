@@ -1,0 +1,96 @@
+const {  gql } = require('apollo-server-express');
+export const typeDefs = gql`
+type FreeNFTDrop @entity(immutable: true) {
+  #a Free NFT Drop is an ERC721 contract, we use the contract address as the id
+  id: Bytes!
+  creator: Bytes! # address
+  createdAt: BigInt! # block timestamp
+  deadline: BigInt! # uint256
+  editionSize: BigInt! # uint256
+  name: String
+  description: String
+  animationUrl: String
+  imageUrl: String
+  #balances: [FreeNFTBalance!]! @derivedFrom(field: "drop")
+}
+
+type FreeNFTBalance @entity(immutable: false) {
+  #The id is <drop address>-<owner address>
+  id: String! # address
+  address: Bytes! # owner address
+  quantity: BigInt! # amount of token that `address` owns
+  drop: FreeNFTDrop!
+  updatedAt: BigInt! # block timestamp
+}
+
+type Approval @entity {
+  id: ID!
+  owner: Bytes! # address
+  approved: Bytes! # address
+  tokenId: BigInt! # uint256
+}
+
+type ApprovalForAll @entity {
+  id: ID!
+  owner: Bytes! # address
+  operator: Bytes! # address
+  approved: Boolean! # bool
+}
+
+type EditionSold @entity {
+  id: ID!
+  price: BigInt! # uint256
+  owner: Bytes! # address
+}
+
+type Initialized @entity {
+  id: ID!
+  version: Int! # uint8
+}
+
+type OwnershipTransferred @entity {
+  id: ID!
+  previousOwner: Bytes! # address
+  newOwner: Bytes! # address
+}
+
+type PriceChanged @entity {
+  id: ID!
+  amount: BigInt! # uint256
+}
+
+type Transfer @entity {
+  id: ID!
+  from: Bytes! # address
+  to: Bytes! # address
+  tokenId: BigInt! # uint256
+}
+
+input FreeNFTDropInput @entity(immutable: true) {
+  #a Free NFT Drop is an ERC721 contract, we use the contract address as the id
+  id: Bytes!
+  creator: Bytes! # address
+  createdAt: BigInt! # block timestamp
+  deadline: BigInt! # uint256
+  editionSize: BigInt! # uint256
+  name: String
+  description: String
+  animationUrl: String
+  imageUrl: String
+  #balances: [FreeNFTBalance!]! @derivedFrom(field: "drop")
+}
+
+
+    
+
+type Query{
+        getAllFreeNFTs:[FreeNFTDrop]
+        
+    }
+
+type Mutation{
+        createFreeNFTs(input:FreeNFTDropInput):FreeNFTDrop
+        addASeries(series:SeriesInput):Series
+    }
+
+`;
